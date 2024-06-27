@@ -564,7 +564,11 @@ impl Pack for Fees {
     }
 }
 
-#[repr(C)]
+/// TODO: Figure out what's going on with the state data.
+/// The data doesn't seem to align with what I see onchain.
+/// Leaving out the padding seems to set everything else in
+/// the AmmInfo struct correctly.
+#[repr(C)]  
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct StateData {
     /// delay to take pnl coin
@@ -578,17 +582,17 @@ pub struct StateData {
     /// ido pool open time
     pub pool_open_time: u64,
     /// padding for future updates
-    pub padding: [u64; 2],
+    // pub padding: [u64; 2], // Original
+    // pub punish_pc_amount: u64, // From the IDL
+    // pub punish_coin_amount: u64,
     /// switch from orderbookonly to init
     pub orderbook_to_init_time: u64,
-
     /// swap coin in amount
     pub swap_coin_in_amount: u128,
     /// swap pc out amount
     pub swap_pc_out_amount: u128,
     /// charge pc as swap fee while swap pc to coin
     pub swap_acc_pc_fee: u64,
-
     /// swap pc in amount
     pub swap_pc_in_amount: u128,
     /// swap coin out amount
@@ -604,7 +608,7 @@ impl StateData {
         self.total_pnl_pc = 0u64;
         self.total_pnl_coin = 0u64;
         self.pool_open_time = open_time;
-        self.padding = Zeroable::zeroed();
+        // self.padding = Zeroable::zeroed();
         self.orderbook_to_init_time = 0u64;
         self.swap_coin_in_amount = 0u128;
         self.swap_pc_out_amount = 0u128;
@@ -679,16 +683,18 @@ pub struct AmmInfo {
     pub market_program: Pubkey,
     /// target_orders key
     pub target_orders: Pubkey,
-    /// padding
-    pub padding1: [u64; 8],
+    /// withdraw queue
+    pub withdraw_queue: Pubkey,
+    /// lp vault
+    pub lp_vault: Pubkey,
     /// amm owner key
     pub amm_owner: Pubkey,
     /// pool lp amount
     pub lp_amount: u64,
     /// client order id
     pub client_order_id: u64,
-    /// padding
-    pub padding2: [u64; 2],
+    // padding
+    pub padding: [u64; 2],
 }
 impl_loadable!(AmmInfo);
 
@@ -820,8 +826,7 @@ impl AmmInfo {
         self.min_price_multiplier = 1;
         self.max_price_multiplier = 1000000000;
         self.client_order_id = 0;
-        self.padding1 = Zeroable::zeroed();
-        self.padding2 = Zeroable::zeroed();
+        self.padding = [0u64, 0u64];
 
         Ok(())
     }
