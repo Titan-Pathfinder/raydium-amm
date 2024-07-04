@@ -564,10 +564,7 @@ impl Pack for Fees {
     }
 }
 
-/// TODO: Figure out what's going on with the state data.
-/// The data doesn't seem to align with what I see onchain.
-/// Leaving out the padding seems to set everything else in
-/// the AmmInfo struct correctly.
+/// UPDATE: Need to compile with the +1.76-x86_64-apple-darwin toolchain.
 #[repr(C)]  
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct StateData {
@@ -582,9 +579,8 @@ pub struct StateData {
     /// ido pool open time
     pub pool_open_time: u64,
     /// padding for future updates
-    // pub padding: [u64; 2], // Original
-    // pub punish_pc_amount: u64, // From the IDL
-    // pub punish_coin_amount: u64,
+    pub punish_pc_amount: u64, // From the IDL
+    pub punish_coin_amount: u64,
     /// switch from orderbookonly to init
     pub orderbook_to_init_time: u64,
     /// swap coin in amount
@@ -608,7 +604,8 @@ impl StateData {
         self.total_pnl_pc = 0u64;
         self.total_pnl_coin = 0u64;
         self.pool_open_time = open_time;
-        // self.padding = Zeroable::zeroed();
+        self.punish_pc_amount = 0u64;
+        self.punish_coin_amount = 0u64;
         self.orderbook_to_init_time = 0u64;
         self.swap_coin_in_amount = 0u128;
         self.swap_pc_out_amount = 0u128;
