@@ -19,8 +19,8 @@ devnet = []
 localnet = []
 
 [dependencies]
-solana-program = "1.17.34"
-solana-sdk = "1.17.34"
+solana-program = "^1.18"
+solana-sdk = "^1.18"
 spl-token = { version = "4.0.0", features = ["no-entrypoint"] }
 spl-associated-token-account = { version = "2.2.0", features = ["no-entrypoint"]}
 serum_dex = { version = "0.5.10", git = "https://github.com/raydium-io/openbook-dex", features=["no-entrypoint", "program"], commit = "546e5fe0f366ce7414424eaf5a481a917b8b5210" }
